@@ -75,6 +75,8 @@ func registerCommands(s *discordgo.Session, prefix *config.PrefixConfig) {
 	}
 
 	cmdHandler.RegisterCommand(&commands.CmdPing{})
+	cmdHandler.RegisterCommand(&commands.CmdPong{})
+
 	cmdHandler.RegisterMiddleware(&commands.MwPermissions{})
 
 	s.AddHandler(cmdHandler.HandleMessage)

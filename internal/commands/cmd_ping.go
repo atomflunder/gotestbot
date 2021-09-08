@@ -15,12 +15,13 @@ func (c *CmdPing) Description() string {
 
 //if it uses admin rights
 func (c *CmdPing) AdminPermission() bool {
-	return true
+	return false
 }
 
 //the command body
 func (c *CmdPing) Exec(ctx *Context) error {
-	_, err := ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, "Pong!")
+	_, err := ctx.Session.ChannelMessageSend(ctx.Message.ChannelID,
+		"Pong!")
 
 	//if theres an error, we return that
 	if err != nil {
