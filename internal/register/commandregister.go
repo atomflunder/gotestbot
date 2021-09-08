@@ -10,7 +10,7 @@ import (
 	"github.com/phxenix-w/gotestbot/internal/inits"
 )
 
-//registers the commands in the internal/commands folder
+//registers the commands in the internal/commands folder. remember to register every command here
 func RegisterCommands(s *discordgo.Session, prefix *config.PrefixConfig) {
 	cmdHandler := inits.NewCommandHandler(prefix.Prefix)
 	//generic error message telling you why the command failed
@@ -20,11 +20,11 @@ func RegisterCommands(s *discordgo.Session, prefix *config.PrefixConfig) {
 
 	//first:
 	//we register all commands, first up: usercommands
-	cmdHandler.RegisterCommand(&usercommands.CmdPing{})
-	cmdHandler.RegisterCommand(&usercommands.CmdPong{})
+	cmdHandler.RegisterCommand(&usercommands.Ping{})
+	cmdHandler.RegisterCommand(&usercommands.Pong{})
 
 	//here are the admin commands
-	cmdHandler.RegisterCommand(&admin.CmdBan{})
+	cmdHandler.RegisterCommand(&admin.Ban{})
 
 	//and here:
 	//all of our permissions

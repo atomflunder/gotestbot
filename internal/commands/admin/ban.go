@@ -5,21 +5,21 @@ import (
 	"github.com/phxenix-w/gotestbot/internal/utils"
 )
 
-type CmdBan struct{}
+type Ban struct{}
 
-func (c *CmdBan) Invokes() []string {
+func (c *Ban) Invokes() []string {
 	return []string{"ban", "b", "banned"}
 }
 
-func (c *CmdBan) Description() string {
+func (c *Ban) Description() string {
 	return "Ban command. Bans mentioned user and provides a reason."
 }
 
-func (c *CmdBan) AdminPermission() bool {
+func (c *Ban) AdminPermission() bool {
 	return true
 }
 
-func (c *CmdBan) Exec(ctx *inits.Context) error {
+func (c *Ban) Exec(ctx *inits.Context) error {
 	//if there are less than 2 values (user/reason) this returns immediately
 	if len(ctx.Args) < 2 {
 		ctx.Session.ChannelMessageSend(ctx.Message.ChannelID,

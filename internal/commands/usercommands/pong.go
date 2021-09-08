@@ -2,21 +2,21 @@ package usercommands
 
 import "github.com/phxenix-w/gotestbot/internal/inits"
 
-type CmdPong struct{}
+type Pong struct{}
 
-func (c *CmdPong) Invokes() []string {
+func (c *Pong) Invokes() []string {
 	return []string{"pong", "pp"}
 }
 
-func (c *CmdPong) Description() string {
+func (c *Pong) Description() string {
 	return "Basic Pong Command for testing purposes. Equivalent of ping. Check out that file for more info."
 }
 
-func (c *CmdPong) AdminPermission() bool {
+func (c *Pong) AdminPermission() bool {
 	return false
 }
 
-func (c *CmdPong) Exec(ctx *inits.Context) error {
+func (c *Pong) Exec(ctx *inits.Context) error {
 	_, err := ctx.Session.ChannelMessageSend(ctx.Message.ChannelID,
 		"Ping!")
 
