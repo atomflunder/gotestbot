@@ -7,6 +7,7 @@ import (
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/phxenix-w/gotestbot/internal/commands/admin"
 	"github.com/phxenix-w/gotestbot/internal/commands/usercommands"
 	"github.com/phxenix-w/gotestbot/internal/config"
 	"github.com/phxenix-w/gotestbot/internal/events"
@@ -78,6 +79,8 @@ func registerCommands(s *discordgo.Session, prefix *config.PrefixConfig) {
 	//all of our commands
 	cmdHandler.RegisterCommand(&usercommands.CmdPing{})
 	cmdHandler.RegisterCommand(&usercommands.CmdPong{})
+
+	cmdHandler.RegisterCommand(&admin.CmdBan{})
 
 	//all of our permissions
 	cmdHandler.RegisterMiddleware(&inits.MwPermissions{})
