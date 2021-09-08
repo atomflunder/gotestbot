@@ -7,6 +7,7 @@ import (
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/phxenix-w/gotestbot/internal/commands"
 	"github.com/phxenix-w/gotestbot/internal/config"
 	"github.com/phxenix-w/gotestbot/internal/events"
 )
@@ -20,6 +21,12 @@ func main() {
 	tokencfg, err := config.GetToken(tokenFile)
 	if err != nil {
 		fmt.Println("Error getting the token:", err)
+		return
+	}
+
+	prefixcfg, err := config.GetPrefix(prefixFile)
+	if err != nil {
+		fmt.Println("Error getting the prefix:", err)
 		return
 	}
 
@@ -40,6 +47,7 @@ func main() {
 
 	//registering all events below
 	registerEvents(dg)
+	registerCommands(dg, prefixcfg)
 
 	//log in message for the console, User.String() gets you the classic username#discriminator
 	fmt.Println("Bot is now running! Logged in as", dg.State.User.String(), "\nPress CTRL+C to exit.")
@@ -56,4 +64,18 @@ func main() {
 //registers all events in the internal/events folder
 func registerEvents(dg *discordgo.Session) {
 	dg.AddHandler(events.NewMessageHandler().Handler)
+}
+
+//registers the commands in the internal/commands folder
+func registerCommands(s *discordgo.Session, prefix *config.PrefixConfig) {
+	cmdHandler := commands.NewCommandHandler(prefix.Prefix)
+	//generic error message telling you why the command failed
+	cmdHandler.OnError = func(err error, ctx *commands.Context) {
+		ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, fmt.Sprintf("Command Execution failed! \nReason:`%s`", err.Error()))
+	}
+
+	cmdHandler.RegisterCommand(&commands.CmdPing{})
+	cmdHandler.RegisterMiddleware(&commands.MwPermissions{})
+
+	s.AddHandler(cmdHandler.HandleMessage)
 }
