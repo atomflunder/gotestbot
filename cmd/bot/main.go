@@ -7,9 +7,10 @@ import (
 	"syscall"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/phxenix-w/gotestbot/internal/commands"
+	"github.com/phxenix-w/gotestbot/internal/commands/usercommands"
 	"github.com/phxenix-w/gotestbot/internal/config"
 	"github.com/phxenix-w/gotestbot/internal/events"
+	"github.com/phxenix-w/gotestbot/internal/inits"
 )
 
 func main() {
@@ -68,16 +69,19 @@ func registerEvents(dg *discordgo.Session) {
 
 //registers the commands in the internal/commands folder
 func registerCommands(s *discordgo.Session, prefix *config.PrefixConfig) {
-	cmdHandler := commands.NewCommandHandler(prefix.Prefix)
+	cmdHandler := inits.NewCommandHandler(prefix.Prefix)
 	//generic error message telling you why the command failed
-	cmdHandler.OnError = func(err error, ctx *commands.Context) {
+	cmdHandler.OnError = func(err error, ctx *inits.Context) {
 		ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, fmt.Sprintf("Command Execution failed! \nReason:`%s`", err.Error()))
 	}
 
-	cmdHandler.RegisterCommand(&commands.CmdPing{})
-	cmdHandler.RegisterCommand(&commands.CmdPong{})
+	//all of our commands
+	cmdHandler.RegisterCommand(&usercommands.CmdPing{})
+	cmdHandler.RegisterCommand(&usercommands.CmdPong{})
 
-	cmdHandler.RegisterMiddleware(&commands.MwPermissions{})
+	//all of our permissions
+	cmdHandler.RegisterMiddleware(&inits.MwPermissions{})
 
+	//all of our listeners
 	s.AddHandler(cmdHandler.HandleMessage)
 }

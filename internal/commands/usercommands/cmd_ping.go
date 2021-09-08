@@ -1,4 +1,6 @@
-package commands
+package usercommands
+
+import "github.com/phxenix-w/gotestbot/internal/inits"
 
 //the first command registered with the things required from the command.go file
 type CmdPing struct{}
@@ -19,7 +21,7 @@ func (c *CmdPing) AdminPermission() bool {
 }
 
 //the command body
-func (c *CmdPing) Exec(ctx *Context) error {
+func (c *CmdPing) Exec(ctx *inits.Context) error {
 	_, err := ctx.Session.ChannelMessageSend(ctx.Message.ChannelID,
 		"Pong!")
 

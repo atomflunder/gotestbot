@@ -1,4 +1,6 @@
-package commands
+package usercommands
+
+import "github.com/phxenix-w/gotestbot/internal/inits"
 
 type CmdPong struct{}
 
@@ -14,7 +16,7 @@ func (c *CmdPong) AdminPermission() bool {
 	return false
 }
 
-func (c *CmdPong) Exec(ctx *Context) error {
+func (c *CmdPong) Exec(ctx *inits.Context) error {
 	_, err := ctx.Session.ChannelMessageSend(ctx.Message.ChannelID,
 		"Ping!")
 

@@ -1,4 +1,4 @@
-package commands
+package inits
 
 //the basic things needed for commands
 type Command interface {
