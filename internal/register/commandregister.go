@@ -26,6 +26,8 @@ func RegisterCommands(s *discordgo.Session, prefix *config.PrefixConfig) {
 	//here are the admin commands
 	cmdHandler.RegisterCommand(&admin.Ban{})
 	cmdHandler.RegisterCommand(&admin.Clear{})
+	cmdHandler.RegisterCommand(&admin.Addrole{})
+	cmdHandler.RegisterCommand(&admin.Removerole{})
 
 	//and here:
 	//all of our permissions
