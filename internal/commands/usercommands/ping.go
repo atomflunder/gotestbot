@@ -1,6 +1,10 @@
 package usercommands
 
-import "github.com/phxenix-w/gotestbot/internal/inits"
+import (
+	"strings"
+
+	"github.com/phxenix-w/gotestbot/internal/inits"
+)
 
 //the first command registered with the things required from the command.go file
 type Ping struct{}
@@ -22,8 +26,11 @@ func (c *Ping) AdminPermission() bool {
 
 //the command body
 func (c *Ping) Exec(ctx *inits.Context) error {
+	//gets the amount of ms, without the digits after the dot, also converts it to a string all in one go
+	p := strings.Split(ctx.Session.HeartbeatLatency().String(), ".")[0]
+
 	_, err := ctx.Session.ChannelMessageSend(ctx.Message.ChannelID,
-		"Pong!")
+		"My ping is: "+p+"ms")
 
 	//if theres an error, we return that
 	if err != nil {

@@ -19,10 +19,6 @@ func RegisterCommands(s *discordgo.Session, prefix *config.PrefixConfig) {
 	}
 
 	//first:
-	//we register all commands, first up: usercommands
-	cmdHandler.RegisterCommand(&usercommands.Ping{})
-	cmdHandler.RegisterCommand(&usercommands.Pong{})
-
 	//here are the admin commands
 	cmdHandler.RegisterCommand(&admin.Ban{})
 	cmdHandler.RegisterCommand(&admin.Clear{})
@@ -31,6 +27,12 @@ func RegisterCommands(s *discordgo.Session, prefix *config.PrefixConfig) {
 	cmdHandler.RegisterCommand(&admin.Kick{})
 	cmdHandler.RegisterCommand(&admin.Unban{})
 	cmdHandler.RegisterCommand(&admin.Rename{})
+
+	//then: usercommands
+	cmdHandler.RegisterCommand(&usercommands.Ping{})
+	cmdHandler.RegisterCommand(&usercommands.Avatar{})
+	cmdHandler.RegisterCommand(&usercommands.Coin{})
+	cmdHandler.RegisterCommand(&usercommands.Dice{})
 
 	//and here:
 	//all of our permissions
