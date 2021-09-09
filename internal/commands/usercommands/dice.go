@@ -53,10 +53,10 @@ func (c *Dice) Exec(ctx *inits.Context) error {
 		return err
 	}
 
-	//checks if the input is not stupidly high
-	if sides > 10000 || amount > 1000 {
+	//checks if the input is not stupidly high or worse, below zero
+	if sides > 10000 || amount > 1000 || sides < 1 || amount < 1 {
 		_, err := ctx.Session.ChannelMessageSend(ctx.Message.ChannelID,
-			"Please do not use any values too high for this dice.")
+			"Please do not use any values too high or too low for this dice.")
 		if err != nil {
 			return err
 		}
