@@ -46,55 +46,22 @@ func (c *Userinfo) Exec(ctx *inits.Context) error {
 	if err != nil {
 		return err
 	}
-	//getting unix timestamp for the join date, need to convert that first sadly
+	//getting time.Time stamp for the join date, need to convert that first sadly
 	user_joined_at, err := time.Parse(time.RFC3339, string(member.JoinedAt))
 	if err != nil {
 		return err
 	}
 
-	//getting the presence for the status/activity
-	user_presence, err := ctx.Session.State.Presence(ctx.Message.GuildID, user_id)
+	//getting the user status/activity
+	user_status, user_activity, err := utils.UserStatusAndActivity(user_id, ctx)
 	if err != nil {
 		return err
-	}
-	//defining the activity in case the user didnt set one
-	user_activity := "None"
-	if len(user_presence.Activities) > 0 {
-		user_activity = user_presence.Activities[0].Name
 	}
 
 	//getting the member roles
 	user_roles := member.Roles
-	//this whole block is for searching the top role of the member.
-	//im sure this can be done better but i certainly couldnt come up with something better at 1am
-	//first we get every role ID and their position
-	var role_positions []int
-	var role_ids []string
-	for x := range member.Roles {
-		role, err := ctx.Session.State.Role(ctx.Message.GuildID, user_roles[x])
-		if err != nil {
-			return err
-		}
-		role_positions = append(role_positions, role.Position)
-		role_ids = append(role_ids, role.ID)
-	}
-	//then we search for the highest position value
-	max_role := role_positions[0]
-	for _, value := range role_positions {
-		if value > max_role {
-			max_role = value
-		}
-	}
-	//then we search the index of the highest position role in the original slice
-	n := 0
-	for x := range role_positions {
-		if max_role == role_positions[x] {
-			break
-		}
-		n += 1
-	}
-	//and then we use that index to get the according role ID in the other slice and finally get the role that is highest
-	top_role, err := ctx.Session.State.Role(ctx.Message.GuildID, role_ids[n])
+	//getting the top role
+	top_role, err := utils.GetTopRole(member, ctx)
 	if err != nil {
 		return err
 	}
@@ -146,7 +113,7 @@ func (c *Userinfo) Exec(ctx *inits.Context) error {
 			},
 			{
 				Name:   "Joined Server on:",
-				Value:  "<t:" + fmt.Sprint(user_joined_at.Unix()) + ":F>",
+				Value:  utils.GetDiscordTimeStamp(&user_joined_at, "F"),
 				Inline: true,
 			},
 			{
@@ -156,12 +123,12 @@ func (c *Userinfo) Exec(ctx *inits.Context) error {
 			},
 			{
 				Name:   "Joined Discord on:",
-				Value:  "<t:" + fmt.Sprint(user_created_at.Unix()) + ":F>",
+				Value:  utils.GetDiscordTimeStamp(&user_created_at, "F"),
 				Inline: true,
 			},
 			{
 				Name:   "Online status:",
-				Value:  string(user_presence.Status),
+				Value:  user_status,
 				Inline: true,
 			},
 			{
