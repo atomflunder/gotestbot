@@ -39,46 +39,46 @@ func (c *Clear) Exec(ctx *inits.Context) error {
 		amount = 1
 	}
 
-	var last_message string
+	var lastMsg string
 
 	//you can only delete 100 messages at once, so we have to loop this code here
 	for amount > 100 {
 		//gets the message array for the correct amount, have to have empty args apparently in go?
-		messages, err := ctx.Session.ChannelMessages(ctx.Message.ChannelID, 100, last_message, "", "")
+		messages, err := ctx.Session.ChannelMessages(ctx.Message.ChannelID, 100, lastMsg, "", "")
 		if err != nil {
 			return err
 		}
 
 		//makes an empty array and appends the message IDs to it for the delete function
-		var message_IDs []string
+		var msgIDs []string
 		for _, message := range messages {
-			message_IDs = append(message_IDs, string(message.ID))
+			msgIDs = append(msgIDs, string(message.ID))
 		}
 
 		//finally deletes the messages with the IDs from above
-		err = ctx.Session.ChannelMessagesBulkDelete(ctx.Message.ChannelID, message_IDs)
+		err = ctx.Session.ChannelMessagesBulkDelete(ctx.Message.ChannelID, msgIDs)
 		if err != nil {
 			return err
 		}
 
 		//pass in the last message ID into the variable so the ChannelMessages function looks for the correct messages, not the ones that were already deleted
-		last_message = message_IDs[len(message_IDs)-1]
+		lastMsg = msgIDs[len(msgIDs)-1]
 		//and finally subtracts 100 from the amount
 		amount -= 100
 	}
 
 	//the code from above is repeated for the last remaining amount of messages, under 100 so we pass in the amount variable
-	messages, err := ctx.Session.ChannelMessages(ctx.Message.ChannelID, amount, last_message, "", "")
+	messages, err := ctx.Session.ChannelMessages(ctx.Message.ChannelID, amount, lastMsg, "", "")
 	if err != nil {
 		return err
 	}
 
-	var message_IDs []string
+	var msgIDs []string
 	for _, message := range messages {
-		message_IDs = append(message_IDs, string(message.ID))
+		msgIDs = append(msgIDs, string(message.ID))
 	}
 
-	err = ctx.Session.ChannelMessagesBulkDelete(ctx.Message.ChannelID, message_IDs)
+	err = ctx.Session.ChannelMessagesBulkDelete(ctx.Message.ChannelID, msgIDs)
 	if err != nil {
 		return err
 	}

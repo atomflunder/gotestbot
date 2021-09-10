@@ -28,24 +28,24 @@ func (c *Removerole) Exec(ctx *inits.Context) error {
 		return nil
 	}
 
-	user_id := utils.UserMentionToID(ctx.Args[0])
+	userID := utils.UserMentionToID(ctx.Args[0])
 
-	user, err := ctx.Session.GuildMember(ctx.Message.GuildID, user_id)
+	user, err := ctx.Session.GuildMember(ctx.Message.GuildID, userID)
 	if err != nil {
 		return err
 	}
 
 	r := utils.GetArgs(ctx.Args, 1)
 
-	role_id := utils.RoleMentionToID(r)
+	roleID := utils.RoleMentionToID(r)
 
 	//gets the role from the utils function
-	role, err := utils.ReturnRoleFromInput(role_id, ctx)
+	role, err := utils.ReturnRoleFromInput(roleID, ctx)
 	if err != nil {
 		return err
 	}
 
-	err = ctx.Session.GuildMemberRoleRemove(ctx.Message.GuildID, user_id, role.ID)
+	err = ctx.Session.GuildMemberRoleRemove(ctx.Message.GuildID, userID, role.ID)
 	if err != nil {
 		return err
 	}

@@ -32,9 +32,9 @@ func (c *Roleinfo) Exec(ctx *inits.Context) error {
 
 	r := utils.GetArgs(ctx.Args, 0)
 
-	role_id := utils.RoleMentionToID(r)
+	roleID := utils.RoleMentionToID(r)
 
-	role, err := utils.ReturnRoleFromInput(role_id, ctx)
+	role, err := utils.ReturnRoleFromInput(roleID, ctx)
 	if err != nil {
 		return err
 	}

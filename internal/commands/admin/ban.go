@@ -28,20 +28,20 @@ func (c *Ban) Exec(ctx *inits.Context) error {
 	}
 
 	//converts the mention to the id
-	user_id := utils.UserMentionToID(ctx.Args[0])
+	userID := utils.UserMentionToID(ctx.Args[0])
 
 	//gets the rest of the args, which has to be the reason. starts at 1 cause 0 is the user
 	reason := utils.GetArgs(ctx.Args, 1)
 
 	//actually bans the user, the last arg here is the amount of days, 0 is infinite
-	err := ctx.Session.GuildBanCreateWithReason(ctx.Message.GuildID, user_id, reason, 0)
+	err := ctx.Session.GuildBanCreateWithReason(ctx.Message.GuildID, userID, reason, 0)
 
 	if err != nil {
 		return err
 	}
 
 	//confirmation message
-	_, err = ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, "Banned <@!"+user_id+"> with reason: `"+reason+"`.")
+	_, err = ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, "Banned <@!"+userID+"> with reason: `"+reason+"`.")
 
 	if err != nil {
 		return err

@@ -27,24 +27,24 @@ func (c *Rename) Exec(ctx *inits.Context) error {
 		return nil
 	}
 
-	user_id := utils.UserMentionToID(ctx.Args[0])
+	userID := utils.UserMentionToID(ctx.Args[0])
 
-	new_name := utils.GetArgs(ctx.Args, 1)
+	newName := utils.GetArgs(ctx.Args, 1)
 
-	//sets their new nickname, as mentioned above if new_name is empty this will just reset it
-	err := ctx.Session.GuildMemberNickname(ctx.Message.GuildID, user_id, new_name)
+	//sets their new nickname, as mentioned above if newName is empty this will just reset it
+	err := ctx.Session.GuildMemberNickname(ctx.Message.GuildID, userID, newName)
 
 	if err != nil {
 		return err
 	}
 
 	//a different confirmation message for if the name got reset and changed, its nicer that way
-	if len(new_name) > 0 {
+	if len(newName) > 0 {
 		_, err = ctx.Session.ChannelMessageSend(ctx.Message.ChannelID,
-			"Renamed <@!"+user_id+"> to: "+new_name)
+			"Renamed <@!"+userID+"> to: "+newName)
 	} else {
 		_, err = ctx.Session.ChannelMessageSend(ctx.Message.ChannelID,
-			"Reset the nickname of <@!"+user_id+">!")
+			"Reset the nickname of <@!"+userID+">!")
 	}
 
 	if err != nil {

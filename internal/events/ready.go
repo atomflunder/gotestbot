@@ -25,6 +25,7 @@ func (h *ReadyHandler) Handler(s *discordgo.Session, e *discordgo.Ready) {
 		"right?",
 	}
 	n := 0
+	//go's equivalent of while true
 	for {
 		err := s.UpdateGameStatus(0, statuses[n])
 		if err != nil {

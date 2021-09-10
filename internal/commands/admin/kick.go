@@ -27,18 +27,18 @@ func (c *Kick) Exec(ctx *inits.Context) error {
 		return nil
 	}
 
-	user_id := utils.UserMentionToID(ctx.Args[0])
+	userID := utils.UserMentionToID(ctx.Args[0])
 
 	reason := utils.GetArgs(ctx.Args, 1)
 
 	//the kick command. no clue why its named member delete
-	err := ctx.Session.GuildMemberDeleteWithReason(ctx.Message.GuildID, user_id, reason)
+	err := ctx.Session.GuildMemberDeleteWithReason(ctx.Message.GuildID, userID, reason)
 	if err != nil {
 		return err
 	}
 
 	_, err = ctx.Session.ChannelMessageSend(ctx.Message.ChannelID,
-		"Kicked <@!"+user_id+"> from this server!")
+		"Kicked <@!"+userID+"> from this server!")
 
 	if err != nil {
 		return err

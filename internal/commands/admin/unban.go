@@ -27,15 +27,15 @@ func (c *Unban) Exec(ctx *inits.Context) error {
 		return nil
 	}
 
-	user_id := utils.UserMentionToID(ctx.Args[0])
+	userID := utils.UserMentionToID(ctx.Args[0])
 
-	err := ctx.Session.GuildBanDelete(ctx.Message.GuildID, user_id)
+	err := ctx.Session.GuildBanDelete(ctx.Message.GuildID, userID)
 
 	if err != nil {
 		return err
 	}
 
-	_, err = ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, "Unbanned <@!"+user_id+">.")
+	_, err = ctx.Session.ChannelMessageSend(ctx.Message.ChannelID, "Unbanned <@!"+userID+">.")
 
 	if err != nil {
 		return err

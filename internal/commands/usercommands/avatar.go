@@ -20,16 +20,16 @@ func (c *Avatar) AdminPermission() bool {
 }
 
 func (c *Avatar) Exec(ctx *inits.Context) error {
-	//first we get the user_id. if the author does not mention any user, it will use them
-	user_id := ""
+	//first we get the userID. if the author does not mention any user, it will use them
+	userID := ""
 	if len(ctx.Args) < 1 {
-		user_id = ctx.Message.Author.ID
+		userID = ctx.Message.Author.ID
 	} else {
-		user_id = utils.UserMentionToID(ctx.Args[0])
+		userID = utils.UserMentionToID(ctx.Args[0])
 	}
 
 	//getting the member
-	member, err := ctx.Session.GuildMember(ctx.Message.GuildID, user_id)
+	member, err := ctx.Session.GuildMember(ctx.Message.GuildID, userID)
 	if err != nil {
 		return err
 	}

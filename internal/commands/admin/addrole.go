@@ -28,10 +28,10 @@ func (c *Addrole) Exec(ctx *inits.Context) error {
 	}
 
 	//converts the mention to the id
-	user_id := utils.UserMentionToID(ctx.Args[0])
+	userID := utils.UserMentionToID(ctx.Args[0])
 
 	//this gets the member, just makes sure its valid
-	user, err := ctx.Session.GuildMember(ctx.Message.GuildID, user_id)
+	user, err := ctx.Session.GuildMember(ctx.Message.GuildID, userID)
 	if err != nil {
 		return err
 	}
@@ -39,15 +39,15 @@ func (c *Addrole) Exec(ctx *inits.Context) error {
 	//gets the rest of the args, which has to be the role searched for. starts at 1 cause 0 is the user
 	r := utils.GetArgs(ctx.Args, 1)
 
-	role_id := utils.RoleMentionToID(r)
+	roleID := utils.RoleMentionToID(r)
 
 	//gets the role from the utils function
-	role, err := utils.ReturnRoleFromInput(role_id, ctx)
+	role, err := utils.ReturnRoleFromInput(roleID, ctx)
 	if err != nil {
 		return err
 	}
 
-	err = ctx.Session.GuildMemberRoleAdd(ctx.Message.GuildID, user_id, role.ID)
+	err = ctx.Session.GuildMemberRoleAdd(ctx.Message.GuildID, userID, role.ID)
 	if err != nil {
 		return err
 	}

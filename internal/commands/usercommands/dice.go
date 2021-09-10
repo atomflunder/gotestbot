@@ -26,13 +26,13 @@ func (c *Dice) AdminPermission() bool {
 func (c *Dice) Exec(ctx *inits.Context) error {
 	//the dice will be input in NdN format, like: 2d100
 	//so we need to split the first arg to get the sides and amount
-	amount_s := ""
-	sides_s := ""
+	amountStr := ""
+	sidesStr := ""
 	//this checks if the input is in the NdN format
 	//otherwise the whole bot exits when we try to assign these values, which is obviously the worst case for a discord bot
 	if len(strings.Split(ctx.Args[0], "d")) > 1 {
-		amount_s = strings.Split(ctx.Args[0], "d")[0]
-		sides_s = strings.Split(ctx.Args[0], "d")[1]
+		amountStr = strings.Split(ctx.Args[0], "d")[0]
+		sidesStr = strings.Split(ctx.Args[0], "d")[1]
 	} else {
 		//returns if the input is not valid
 		_, err := ctx.Session.ChannelMessageSend(ctx.Message.ChannelID,
@@ -44,11 +44,11 @@ func (c *Dice) Exec(ctx *inits.Context) error {
 	}
 
 	//then we convert both to integers
-	amount, err := strconv.Atoi(amount_s)
+	amount, err := strconv.Atoi(amountStr)
 	if err != nil {
 		return err
 	}
-	sides, err := strconv.Atoi(sides_s)
+	sides, err := strconv.Atoi(sidesStr)
 	if err != nil {
 		return err
 	}
@@ -65,7 +65,7 @@ func (c *Dice) Exec(ctx *inits.Context) error {
 
 	//setting up the total and individual roll vars
 	result := 0
-	var result_list []string
+	var resultList []string
 
 	for amount > 0 {
 		//first we need a different seed each time we run this loop, since amount changes everytime i use that
@@ -78,18 +78,18 @@ func (c *Dice) Exec(ctx *inits.Context) error {
 		result += r
 		//and also append it to the string of results so the user sees each dice roll separately again
 		rs := strconv.Itoa(r)
-		result_list = append(result_list, rs)
+		resultList = append(resultList, rs)
 		amount -= 1
 	}
 
 	//now we need to convert the result and the list to a string to send it in a message
-	result_s := strconv.Itoa(result)
-	result_list_s := strings.Join(result_list, ", ")
+	resultStr := strconv.Itoa(result)
+	resultListStr := strings.Join(resultList, ", ")
 
 	//sends all this stuff back to the user in one message
 	//we can use the original sides and amount vars since all checks passed and they are correct inputs
 	_, err = ctx.Session.ChannelMessageSend(ctx.Message.ChannelID,
-		"Rolled a "+sides_s+" sided dice "+amount_s+" times:\nTotal: "+result_s+"\nRolls: "+result_list_s)
+		"Rolled a "+sidesStr+" sided dice "+amountStr+" times:\nTotal: "+resultStr+"\nRolls: "+resultListStr)
 
 	if err != nil {
 		return err
