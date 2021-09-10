@@ -12,18 +12,13 @@ import (
 )
 
 func main() {
-	//location of config files
-	const tokenFile = "./internal/config/token.json"
-	const prefixFile = "./internal/config/prefix.json"
-
-	//gets the token from the file
-	tokencfg, err := config.GetToken(tokenFile)
+	//gets the token&prefix from the file
+	tokencfg, err := config.GetToken("./internal/config/token.json")
 	if err != nil {
 		fmt.Println("Error getting the token:", err)
 		return
 	}
-
-	prefixcfg, err := config.GetPrefix(prefixFile)
+	prefixcfg, err := config.GetPrefix("./internal/config/prefix.json")
 	if err != nil {
 		fmt.Println("Error getting the prefix:", err)
 		return
@@ -39,17 +34,15 @@ func main() {
 	//just get every intent
 	s.Identify.Intents = discordgo.IntentsAll
 
+	//registering all events and commands in the register folder... before opening the connection to discord
+	register.RegisterEvents(s)
+	register.RegisterCommands(s, prefixcfg)
+
+	//opening up the connection
 	err = s.Open()
 	if err != nil {
 		fmt.Println("Error opening connection:", err)
 	}
-
-	//registering all events and commands in the register folder
-	register.RegisterEvents(s)
-	register.RegisterCommands(s, prefixcfg)
-
-	//log in message for the console, User.String() gets you the classic username#discriminator
-	fmt.Println("Bot is now running! Logged in as", s.State.User.String(), "\nPress CTRL+C to exit.")
 
 	//the code for running the process, keeping it open and stopping it
 	sc := make(chan os.Signal, 1)

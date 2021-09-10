@@ -8,4 +8,5 @@ import (
 //registers all events in the internal/events folder
 func RegisterEvents(s *discordgo.Session) {
 	s.AddHandler(events.NewMessageHandler().Handler)
+	s.AddHandler(events.NewReadyHandler().Handler)
 }
