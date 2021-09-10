@@ -1,8 +1,6 @@
 package admin
 
 import (
-	"strconv"
-
 	"github.com/phxenix-w/gotestbot/internal/inits"
 	"github.com/phxenix-w/gotestbot/internal/utils"
 )
@@ -37,30 +35,23 @@ func (c *Removerole) Exec(ctx *inits.Context) error {
 		return err
 	}
 
-	role := utils.GetArgs(ctx.Args, 1)
+	r := utils.GetArgs(ctx.Args, 1)
 
-	role_id := utils.RoleMentionToID(role)
+	role_id := utils.RoleMentionToID(r)
 
-	if _, err := strconv.Atoi(role_id); err == nil {
-		err := ctx.Session.GuildMemberRoleRemove(ctx.Message.GuildID, user_id, role_id)
-		if err != nil {
-			return err
-		}
-	} else {
-		role_id = utils.RoleSearch(role, ctx)
-		err := ctx.Session.GuildMemberRoleRemove(ctx.Message.GuildID, user_id, role_id)
-		if err != nil {
-			return err
-		}
+	//gets the role from the utils function
+	role, err := utils.ReturnRoleFromInput(role_id, ctx)
+	if err != nil {
+		return err
 	}
 
-	final_role, err := ctx.Session.State.Role(ctx.Message.GuildID, role_id)
+	err = ctx.Session.GuildMemberRoleRemove(ctx.Message.GuildID, user_id, role.ID)
 	if err != nil {
 		return err
 	}
 
 	ctx.Session.ChannelMessageSend(ctx.Message.ChannelID,
-		"Removed the "+final_role.Name+" role from "+user.Mention()+".")
+		"Removed the "+role.Name+" role from "+user.Mention()+".")
 
 	return nil
 }

@@ -37,6 +37,7 @@ func RegisterCommands(s *discordgo.Session, prefix *config.PrefixConfig) {
 
 	//here are info commands
 	cmdHandler.RegisterCommand(&info.Userinfo{})
+	cmdHandler.RegisterCommand(&info.Roleinfo{})
 
 	//and here:
 	//all of our permissions

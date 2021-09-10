@@ -1,8 +1,6 @@
 package admin
 
 import (
-	"strconv"
-
 	"github.com/phxenix-w/gotestbot/internal/inits"
 	"github.com/phxenix-w/gotestbot/internal/utils"
 )
@@ -39,36 +37,24 @@ func (c *Addrole) Exec(ctx *inits.Context) error {
 	}
 
 	//gets the rest of the args, which has to be the role searched for. starts at 1 cause 0 is the user
-	role := utils.GetArgs(ctx.Args, 1)
+	r := utils.GetArgs(ctx.Args, 1)
 
-	role_id := utils.RoleMentionToID(role)
+	role_id := utils.RoleMentionToID(r)
 
-	//this converts the input to an int, if its true it will try to use the role ID directly.
-	//the "oversight" here is that if a role has a name only with ints and you search for it, it will not work
-	//need to fix this sometime, but for now this is the best i came up with
-	if _, err := strconv.Atoi(role_id); err == nil {
-		err := ctx.Session.GuildMemberRoleAdd(ctx.Message.GuildID, user_id, role_id)
-		if err != nil {
-			return err
-		}
-		//if this is not true, it searches for the closest matching role, and then gives it out
-	} else {
-		role_id = utils.RoleSearch(role, ctx)
-		err := ctx.Session.GuildMemberRoleAdd(ctx.Message.GuildID, user_id, role_id)
-		if err != nil {
-			return err
-		}
+	//gets the role from the utils function
+	role, err := utils.ReturnRoleFromInput(role_id, ctx)
+	if err != nil {
+		return err
 	}
 
-	//this gets the role, to use the role name in the message later
-	final_role, err := ctx.Session.State.Role(ctx.Message.GuildID, role_id)
+	err = ctx.Session.GuildMemberRoleAdd(ctx.Message.GuildID, user_id, role.ID)
 	if err != nil {
 		return err
 	}
 
 	//final confirmation message
 	ctx.Session.ChannelMessageSend(ctx.Message.ChannelID,
-		"Added the "+final_role.Name+" role to "+user.Mention()+".")
+		"Added the "+role.Name+" role to "+user.Mention()+".")
 
 	return nil
 }

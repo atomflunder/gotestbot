@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"strconv"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
@@ -34,6 +35,29 @@ func RoleSearch(RoleInput string, ctx *inits.Context) string {
 	role_id := role_ids[match[0].Index]
 
 	return role_id
+}
+
+//this converts the input to an int, if its true it will try to use the role ID directly. uses the function above too
+//the "oversight" here is that if a role has a name only with ints and you search for it, it will not work
+//need to fix this sometime, but for now this is the best i came up with
+func ReturnRoleFromInput(role_input string, ctx *inits.Context) (*discordgo.Role, error) {
+	var role *discordgo.Role
+	var role_id string
+	//we try the input out, if its an int it it tries to use it as an ID
+	if _, err := strconv.Atoi(role_input); err == nil {
+		role, err = ctx.Session.State.Role(ctx.Message.GuildID, role_input)
+		if err != nil {
+			return nil, err
+		}
+		//if this is not true, it searches for the closest matching role, and then gives it out
+	} else {
+		role_id = RoleSearch(role_input, ctx)
+		role, err = ctx.Session.State.Role(ctx.Message.GuildID, role_id)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return role, nil
 }
 
 func GetTopRole(member *discordgo.Member, ctx *inits.Context) (*discordgo.Role, error) {
