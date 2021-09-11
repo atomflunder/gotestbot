@@ -92,8 +92,9 @@ func (c *Roleinfo) Exec(ctx *inits.Context) error {
 				Inline: true,
 			},
 			{
-				Name:   "Color:",
-				Value:  fmt.Sprint(role.Color),
+				Name: "Color:",
+				//converts from int to hex, cause thats what discord uses
+				Value:  fmt.Sprintf("#%X", role.Color),
 				Inline: true,
 			},
 		},
