@@ -92,3 +92,22 @@ func GetTopRole(member *discordgo.Member, ctx *inits.Context) (*discordgo.Role, 
 	return topRole, nil
 
 }
+
+//getting every member who has a certain role
+func GetRoleMembers(role *discordgo.Role, ctx *inits.Context) ([]*discordgo.Member, error) {
+	guildMembers, err := ctx.Session.GuildMembers(ctx.Message.GuildID, "", 1000)
+	if err != nil {
+		return nil, err
+	}
+	//looping through every members roles in this guild and comparing IDs, if one matches the count goes up by 1
+	var members []*discordgo.Member
+	for x := range guildMembers {
+		for mr := range guildMembers[x].Roles {
+			if guildMembers[x].Roles[mr] == role.ID {
+				members = append(members, guildMembers[x])
+			}
+		}
+	}
+
+	return members, nil
+}

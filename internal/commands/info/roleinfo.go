@@ -45,19 +45,10 @@ func (c *Roleinfo) Exec(ctx *inits.Context) error {
 		return err
 	}
 
-	//getting every guild member to get the total count of members with this role
-	guildMembers, err := ctx.Session.GuildMembers(ctx.Message.GuildID, "", 1000)
+	//getting role members
+	roleMembers, err := utils.GetRoleMembers(role, ctx)
 	if err != nil {
 		return err
-	}
-	//looping through every members roles in this guild and comparing IDs, if one matches the count goes up by 1
-	roleMembers := 0
-	for x := range guildMembers {
-		for mr := range guildMembers[x].Roles {
-			if guildMembers[x].Roles[mr] == role.ID {
-				roleMembers += 1
-			}
-		}
 	}
 
 	embed := &discordgo.MessageEmbed{
@@ -73,7 +64,7 @@ func (c *Roleinfo) Exec(ctx *inits.Context) error {
 			},
 			{
 				Name:   "Users with role:",
-				Value:  fmt.Sprint(roleMembers),
+				Value:  fmt.Sprint(len(roleMembers)),
 				Inline: true,
 			},
 			{
