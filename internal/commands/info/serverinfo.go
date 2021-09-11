@@ -53,13 +53,13 @@ func (c *Serverinfo) Exec(ctx *inits.Context) error {
 		return err
 	}
 
-	//counts the channels in the guild
+	//counts the channels in the guild, 0 and 3 are the corresponding types
 	var textChannels []*discordgo.Channel
 	var voiceChannels []*discordgo.Channel
 	for c := range guild.Channels {
-		if guild.Channels[c].Type == 0 {
+		if utils.CheckChannelType(guild.Channels[c]) == "Text" {
 			textChannels = append(textChannels, guild.Channels[c])
-		} else if guild.Channels[c].Type == 2 {
+		} else if utils.CheckChannelType(guild.Channels[c]) == "Voice" {
 			voiceChannels = append(voiceChannels, guild.Channels[c])
 		}
 	}
@@ -71,20 +71,10 @@ func (c *Serverinfo) Exec(ctx *inits.Context) error {
 	}
 
 	//getting the amount of individual server boosters
-	var guildBoosters []*discordgo.Member
-	for m := range guild.Members {
-		if guild.Members[m].PremiumSince != "" {
-			guildBoosters = append(guildBoosters, guild.Members[m])
-		}
-	}
+	guildBoosters := utils.GuildBoosters(guild.Members)
 
 	//getting the amount of bot members
-	var botMembers []*discordgo.Member
-	for b := range guild.Members {
-		if guild.Members[b].User.Bot {
-			botMembers = append(botMembers, guild.Members[b])
-		}
-	}
+	botMembers := utils.BotMembers(guild.Members)
 
 	//the embed itself, quite full
 	embed := &discordgo.MessageEmbed{
