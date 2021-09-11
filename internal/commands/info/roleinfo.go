@@ -39,6 +39,27 @@ func (c *Roleinfo) Exec(ctx *inits.Context) error {
 		return err
 	}
 
+	//getting the role created at date:
+	roleCreatedAt, err := discordgo.SnowflakeTimestamp(role.ID)
+	if err != nil {
+		return err
+	}
+
+	//getting every guild member to get the total count of members with this role
+	guildMembers, err := ctx.Session.GuildMembers(ctx.Message.GuildID, "", 1000)
+	if err != nil {
+		return err
+	}
+	//looping through every members roles in this guild and comparing IDs, if one matches the count goes up by 1
+	roleMembers := 0
+	for x := range guildMembers {
+		for mr := range guildMembers[x].Roles {
+			if guildMembers[x].Roles[mr] == role.ID {
+				roleMembers += 1
+			}
+		}
+	}
+
 	embed := &discordgo.MessageEmbed{
 		Title:     "Roleinfo of " + role.Name,
 		Color:     role.Color,
@@ -52,12 +73,12 @@ func (c *Roleinfo) Exec(ctx *inits.Context) error {
 			},
 			{
 				Name:   "Users with role:",
-				Value:  "TBD",
+				Value:  fmt.Sprint(roleMembers),
 				Inline: true,
 			},
 			{
 				Name:   "Created at:",
-				Value:  "TBD",
+				Value:  utils.GetDiscordTimeStamp(&roleCreatedAt, "F"),
 				Inline: true,
 			},
 			{
