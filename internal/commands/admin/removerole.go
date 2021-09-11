@@ -40,7 +40,7 @@ func (c *Removerole) Exec(ctx *inits.Context) error {
 	roleID := utils.RoleMentionToID(r)
 
 	//gets the role from the utils function
-	role, err := utils.ReturnRoleFromInput(roleID, ctx)
+	role, err := utils.RoleFromInput(roleID, ctx)
 	if err != nil {
 		return err
 	}

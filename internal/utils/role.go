@@ -15,35 +15,11 @@ func RoleMentionToID(RoleMention string) string {
 	return roleID
 }
 
-func RoleSearch(roleInput string, ctx *inits.Context) string {
-	//getting every role
-	roles, _ := ctx.Session.GuildRoles(ctx.Message.GuildID)
-
-	//the name and IDs correspond so we can search for the name and use that to get the index of IDs
-	var roleNames []string
-	var roleIDs []string
-
-	for _, role := range roles {
-		roleNames = append(roleNames, role.Name)
-		roleIDs = append(roleIDs, role.ID)
-	}
-
-	//uses fuzzy sort to find a good match
-	match := fuzzy.Find(roleInput, roleNames)
-
-	//uses the method mentioned above
-	roleID := roleIDs[match[0].Index]
-
-	return roleID
-}
-
-//this converts the input to an int, if its true it will try to use the role ID directly. uses the function above too
-//the "oversight" here is that if a role has a name only with ints and you search for it, it will not work
-//need to fix this sometime, but for now this is the best i came up with
-func ReturnRoleFromInput(roleInput string, ctx *inits.Context) (*discordgo.Role, error) {
+//this converts the input to a matching *discordgo.Role
+func RoleFromInput(roleInput string, ctx *inits.Context) (*discordgo.Role, error) {
 	var role *discordgo.Role
-	var roleID string
 	//we try the input out, if its an int it it tries to use it as an ID
+	//the "oversight" here is that if a role has a name only with ints and you search for it, it will not work
 	if _, err := strconv.Atoi(roleInput); err == nil {
 		role, err = ctx.Session.State.Role(ctx.Message.GuildID, roleInput)
 		if err != nil {
@@ -51,7 +27,23 @@ func ReturnRoleFromInput(roleInput string, ctx *inits.Context) (*discordgo.Role,
 		}
 		//if this is not true, it searches for the closest matching role, and then gives it out
 	} else {
-		roleID = RoleSearch(roleInput, ctx)
+		roles, _ := ctx.Session.GuildRoles(ctx.Message.GuildID)
+
+		//the name and IDs correspond so we can search for the name and use that to get the index of IDs
+		var roleNames []string
+		var roleIDs []string
+
+		for _, role := range roles {
+			roleNames = append(roleNames, role.Name)
+			roleIDs = append(roleIDs, role.ID)
+		}
+
+		//uses fuzzy sort to find a good match
+		match := fuzzy.Find(roleInput, roleNames)
+
+		//uses the method mentioned above
+		roleID := roleIDs[match[0].Index]
+
 		role, err = ctx.Session.State.Role(ctx.Message.GuildID, roleID)
 		if err != nil {
 			return nil, err
