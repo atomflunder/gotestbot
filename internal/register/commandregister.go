@@ -7,6 +7,7 @@ import (
 	"github.com/phxenix-w/gotestbot/internal/commands/admin"
 	"github.com/phxenix-w/gotestbot/internal/commands/info"
 	"github.com/phxenix-w/gotestbot/internal/commands/usercommands"
+	"github.com/phxenix-w/gotestbot/internal/commands/voice"
 	"github.com/phxenix-w/gotestbot/internal/config"
 	"github.com/phxenix-w/gotestbot/internal/inits"
 )
@@ -40,6 +41,11 @@ func RegisterCommands(s *discordgo.Session, prefix *config.PrefixConfig) {
 	cmdHandler.RegisterCommand(&info.Roleinfo{})
 	cmdHandler.RegisterCommand(&info.Listrole{})
 	cmdHandler.RegisterCommand(&info.Serverinfo{})
+	cmdHandler.RegisterCommand(&info.Botstats{})
+
+	//voice stuff
+	cmdHandler.RegisterCommand(&voice.Play{})
+	cmdHandler.RegisterCommand(&voice.Stop{})
 
 	//and here:
 	//all of our permissions
