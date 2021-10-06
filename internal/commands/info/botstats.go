@@ -96,7 +96,7 @@ func (c *Botstats) Exec(ctx *inits.Context) error {
 			},
 			{
 				Name:   "Bot Version:",
-				Value:  "0.2.10", //whatever
+				Value:  utils.BotVersion,
 				Inline: true,
 			},
 			{
